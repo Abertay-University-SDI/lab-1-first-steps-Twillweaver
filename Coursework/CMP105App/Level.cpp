@@ -1,4 +1,4 @@
-#include "Level.h"
+﻿#include "Level.h"
 #include <iostream>
 
 Level::Level(sf::RenderWindow& hwnd, Input& in) :
@@ -128,8 +128,20 @@ void Level::update(float dt)
 	if (pos.x > windowSize.x - radius * 2 || pos.x < 0 ||
 		pos.y > windowSize.y - radius * 2 || pos.y < 0)
 	{
-		// mark game over
-		m_isGameOver = true;
+		m_lives--;
+
+		if (m_lives > 0)
+		{
+			// Reset player to center and stop movement
+			m_player.setPosition({ windowSize.x * 0.5f, windowSize.y * 0.5f });
+			m_direction = Direction::RIGHT; // or some default
+			std::cout << "You hit the wall! Lives remaining: " << m_lives << std::endl;
+		}
+		else
+		{
+			// No lives left = game over
+			m_isGameOver = true;
+		}
 	}
 
 	// Collision with food
@@ -189,7 +201,7 @@ void Level::spawnFood()
 	float x = static_cast<float>(rand() % m_window.getSize().x);
 	float y = static_cast<float>(rand() % m_window.getSize().y);
 
-	// Minimum distance from snake (� of smallest window dimension)
+	// Minimum distance from snake (¼ of smallest window dimension)
 	float minDist = std::min(
 		m_window.getSize().x * 0.25f,
 		m_window.getSize().y * 0.25f
@@ -234,6 +246,7 @@ void Level::resetGame()
 	m_flashTimer = 0.f;
 	m_player.setFillColor(m_originalColor);
 	m_player.setRadius(m_originalRadius);
+	m_lives = 3;
 	m_hasPrintedEndMessage = false;
 
 	// Spawn new food

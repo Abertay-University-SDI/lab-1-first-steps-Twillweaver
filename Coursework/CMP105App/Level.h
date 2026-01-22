@@ -50,6 +50,9 @@ private:
 	// player wins after eating 10 food
 	int m_scoreToWin = 10;  
 
+	// number of lives
+	int m_lives = 3;
+
 	// game win condition
 	bool m_isGameWon = false;
 
