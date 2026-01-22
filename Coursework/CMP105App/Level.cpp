@@ -42,11 +42,22 @@ void Level::handleInput(float dt)
 	if (m_input.isKeyDown(sf::Keyboard::Scancode::S))
 		m_direction = Direction::DOWN;
 
+	// game reset input
+	if (m_isGameOver && m_input.isKeyDown(sf::Keyboard::Scancode::R))
+	{
+		resetGame();
+	}
+
 }
 
 // Update game objects
 void Level::update(float dt)
 {
+	if (m_isGameOver)
+		return;           // stop updating when game is over
+
+	m_timeElapsed += dt;   // add frame delta time to timer
+
 	// sustained movement
 	switch (m_direction)
 	{
@@ -72,16 +83,15 @@ void Level::update(float dt)
 	float radius = m_player.getRadius();
 	sf::Vector2u windowSize = m_window.getSize();
 
-	// Check X bounds
-	if (pos.x > windowSize.x - radius * 2 || pos.x < 0)
+	// Check game field bounds
+	if (pos.x > windowSize.x - radius * 2 || pos.x < 0 ||
+		pos.y > windowSize.y - radius * 2 || pos.y < 0)
 	{
-		m_player.setPosition({ windowSize.x * 0.5f, windowSize.y * 0.5f });
-	}
-
-	// Check Y bounds
-	if (pos.y > windowSize.y - radius * 2 || pos.y < 0)
-	{
-		m_player.setPosition({ windowSize.x * 0.5f, windowSize.y * 0.5f });
+		m_isGameOver = true;  // mark game over
+		std::cout << "GAME OVER\n";
+		std::cout << "Score: " << m_score << "\n";
+		std::cout << "Time: " << m_timeElapsed << " seconds\n";
+		std::cout << "Press R to Restart the game!\n";
 	}
 
 	// Collision with food
@@ -103,8 +113,10 @@ void Level::update(float dt)
 		m_speed *= 1.1f;   // increase speed by 10%
 		m_speed = std::clamp(m_speed, m_minSpeed, m_maxSpeed);  // clamp min/max
 
-		// Debug: print current speed
-		std::cout << "Current snake speed: " << m_speed << " px/s" << std::endl;
+		m_score++;  // increment score
+
+		// Debug: print score and current speed
+		std::cout << "Food eaten! Score: " << m_score << ", Speed: " << m_speed << " px/s" << std::endl;
 	}
 }
 
@@ -145,5 +157,24 @@ void Level::render()
 	m_window.draw(m_player);
 
 	endDraw();
+}
+
+// reset level
+void Level::resetGame()
+{
+	// Reset player
+	m_player.setPosition({ m_window.getSize().x * 0.5f, m_window.getSize().y * 0.5f });
+	m_speed = 200.f;               // reset to starting speed
+	m_direction = Direction::RIGHT;
+
+	// Reset game state
+	m_score = 0;
+	m_timeElapsed = 0.f;
+	m_isGameOver = false;
+
+	// Spawn new food
+	spawnFood();
+
+	std::cout << "Game restarted!" << std::endl;
 }
 
