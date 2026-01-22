@@ -13,7 +13,8 @@ public:
 	void render() override;
 
 private:
-	// Default functions for rendering to the screen.
+	// Default functions for rendering to the screen
+	// default variables for level class
 
 	// player representation
 	sf::CircleShape m_player;
@@ -21,15 +22,20 @@ private:
 	// food representation
 	sf::CircleShape m_food;
 
-	bool m_isGameOver = false;  // true when the snake hits a wall
-	int m_score = 0;            // number of food eaten
-	float m_timeElapsed = 0.f;  // time since game start in seconds
+	// true when the snake hits a wall
+	bool m_isGameOver = false;
+	// number of food eaten
+	int m_score = 0;        
+	// time since game start in seconds
+	float m_timeElapsed = 0.f;  
 
 	// player speed
 	float m_speed = 200.f;
 
-	float m_minSpeed = 200.f;   // minimum allowed speed
-	float m_maxSpeed = 600.f;   // maximum allowed speed
+	// minimum allowed speed
+	float m_minSpeed = 200.f;   
+	// maximum allowed speed
+	float m_maxSpeed = 600.f;   
 
 	// movement direction
 	enum class Direction { UP, DOWN, LEFT, RIGHT };
@@ -41,6 +47,25 @@ private:
 	// level reset
 	void resetGame();
 
-	// Default variables for level class.
+	// player wins after eating 10 food
+	int m_scoreToWin = 10;  
+
+	// game win condition
+	bool m_isGameWon = false;
+
+	// player's original size
+	float m_originalRadius = 10.f;
+
+	// toggle flashing on/off
+	bool m_flashToggle = false;      
+	// timer to control flash speed
+	float m_flashTimer = 0.f;         
+	// flash every 0.5 second
+	float m_flashInterval = 0.5f;     
+	// store original snake color
+	sf::Color m_originalColor;  
+
+	// end of game message
+	bool m_hasPrintedEndMessage = false;
 	
 };
