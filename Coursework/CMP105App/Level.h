@@ -18,12 +18,20 @@ private:
 	// player representation
 	sf::CircleShape m_player;
 
+	// food representation
+	sf::CircleShape m_food;
+
 	// player speed
 	float m_speed = 200.f;
+
+	float m_minSpeed = 100.f;   // minimum allowed speed
+	float m_maxSpeed = 800.f;   // maximum allowed speed
 
 	// movement direction
 	enum class Direction { UP, DOWN, LEFT, RIGHT };
 	Direction m_direction = Direction::RIGHT;
+
+	void spawnFood();
 
 	// Default variables for level class.
 	
